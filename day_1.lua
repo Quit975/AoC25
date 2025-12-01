@@ -68,13 +68,18 @@ function SolveSecondPart()
             actual_turn_amount = -actual_turn_amount;
         end
 
+        local was_zero = current_dial == 0;
         current_dial = current_dial + actual_turn_amount;
         if current_dial < 0 then
             current_dial = (max_dial + 1) + current_dial;
-            solution = solution + 1;
+            if not was_zero then
+                solution = solution + 1;
+            end
         elseif current_dial > max_dial then
             current_dial = current_dial - (max_dial + 1);
-            solution = solution + 1;
+            if not (current_dial == 0) then
+                solution = solution + 1;
+            end
         end
 
         if current_dial == 0 then
