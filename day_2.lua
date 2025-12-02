@@ -102,13 +102,98 @@ function SolveFirstPart()
     print(string.format("The solution took %f seconds", final_time));
 end
 
+function BuildNumberFromDuplicates(number_base_string, number_length)
+    assert(type(number_base_string) == "string" and type(number_length) == "number");
+    assert(number_length % #number_base_string == 0);
+
+    local number_result_string = "";
+    local num_iter = number_length / #number_base_string;
+    for i = 1, num_iter do
+        number_result_string = number_result_string .. number_base_string;
+    end
+
+    return number_result_string;
+end
 
 function SolveSecondPart()
     local start_time = os.clock();
     local solution = 0;
 
+    local CheckRange = function(left_number_string, right_number_string, current_solution)
+        assert(type(left_number_string) == "string" and type(right_number_string) == "string" and type(current_solution) == "number");
+
+        local left_len = #left_number_string;
+        local right_len = #right_number_string;
+        local left_number = tonumber(left_number_string);
+        local right_number = tonumber(right_number_string);
+
+        local starting_solution = current_solution;
+
+        for i = 1, left_len - 1 do
+            if left_len % i ~= 0 then
+                goto continue;
+            end
+
+            local number_base_string = string.sub(left_number_string, 1, i);
+            local max_number_for_base = GetMaxNumberOfLength(i);
+
+            for j = tonumber(number_base_string), max_number_for_base do
+                number_base_string = tostring(j);
+                local next_invalid_id = tonumber(BuildNumberFromDuplicates(number_base_string, left_len));
+                if next_invalid_id < left_number or next_invalid_id > right_number then
+                    break;
+                end
+
+                current_solution = current_solution + next_invalid_id;
+            end
+
+            ::continue::
+        end
+
+        if right_len > left_len then
+            local from_number = GetMaxNumberOfLength(left_len) + 1;
+
+            for i = 1, right_len - 1 do
+                if right_len % i ~= 0 then
+                    goto continue;
+                end
+
+                local number_base_string = string.sub(right_number_string, 1, i);
+                local max_number_for_base = GetMaxNumberOfLength(i);
+
+                for j = tonumber(number_base_string), max_number_for_base do
+                    number_base_string = tostring(j);
+                    local next_invalid_id = tonumber(BuildNumberFromDuplicates(number_base_string, right_len));
+                    if next_invalid_id < left_number or next_invalid_id > right_number then
+                        break;
+                    end
+
+                    current_solution = current_solution + next_invalid_id;
+                end
+
+                ::continue::
+            end
+        end
+
+        assert(starting_solution <= current_solution);
+        return current_solution;
+    end
+    
     for line in input_file:lines() do
-        
+        local current_span, remaining_string = SplitString(line, ",");
+        while remaining_string do
+            local left, right = SplitString(current_span, "-");
+            assert(left and right);
+
+            solution = CheckRange(left, right, solution);
+            
+            current_span, remaining_string = SplitString(remaining_string, ",");
+        end
+
+        local left, right = SplitString(current_span, "-");
+        assert(left and right);
+
+        solution = CheckRange(left, right, solution);
     end
     input_file:seek("set", 0);
 
