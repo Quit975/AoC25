@@ -129,6 +129,8 @@ function SolveSecondPart()
 
         local starting_solution = current_solution;
 
+        local already_added_ids = Set.New({});
+
         for i = 1, left_len - 1 do
             if left_len % i ~= 0 then
                 goto continue;
@@ -140,11 +142,16 @@ function SolveSecondPart()
             for j = tonumber(number_base_string), max_number_for_base do
                 number_base_string = tostring(j);
                 local next_invalid_id = tonumber(BuildNumberFromDuplicates(number_base_string, left_len));
-                if next_invalid_id < left_number or next_invalid_id > right_number then
+                if next_invalid_id > right_number then
                     break;
                 end
 
-                current_solution = current_solution + next_invalid_id;
+                if next_invalid_id >= left_number then
+                    if already_added_ids[next_invalid_id] == nil then
+                        current_solution = current_solution + next_invalid_id;
+                        Set.Add(already_added_ids, next_invalid_id);
+                    end
+                end
             end
 
             ::continue::
@@ -152,23 +159,27 @@ function SolveSecondPart()
 
         if right_len > left_len then
             local from_number = GetMaxNumberOfLength(left_len) + 1;
+            local from_number_string = tostring(from_number);
 
             for i = 1, right_len - 1 do
                 if right_len % i ~= 0 then
                     goto continue;
                 end
 
-                local number_base_string = string.sub(right_number_string, 1, i);
+                local number_base_string = string.sub(from_number_string, 1, i);
                 local max_number_for_base = GetMaxNumberOfLength(i);
 
                 for j = tonumber(number_base_string), max_number_for_base do
                     number_base_string = tostring(j);
                     local next_invalid_id = tonumber(BuildNumberFromDuplicates(number_base_string, right_len));
-                    if next_invalid_id < left_number or next_invalid_id > right_number then
+                    if next_invalid_id > right_number then
                         break;
                     end
 
-                    current_solution = current_solution + next_invalid_id;
+                    if already_added_ids[next_invalid_id] == nil then
+                        current_solution = current_solution + next_invalid_id;
+                        Set.Add(already_added_ids, next_invalid_id);
+                    end
                 end
 
                 ::continue::
