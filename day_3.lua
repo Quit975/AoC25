@@ -42,13 +42,46 @@ function SolveFirstPart()
     print(string.format("The solution took %f seconds", final_time));
 end
 
+function PushJoltage(joltage, joltage_array, pos)
+    assert(type(joltage) == "number" and type(joltage_array) == "table");
+    assert(type(pos) == "nil" or (type(pos) == "number" and pos <= 12));
+
+    local at_pos = pos and pos or 1;
+
+    if joltage >= joltage_array[at_pos] then
+        local pushed_joltage = joltage_array[at_pos];
+        joltage_array[at_pos] = joltage;
+        if at_pos < 12 then
+            PushJoltage(pushed_joltage, joltage_array, at_pos + 1);
+        end
+    end
+end
 
 function SolveSecondPart()
     local start_time = os.clock();
     local solution = 0;
 
     for line in input_file:lines() do
-        
+        local joltages = GetNumberAtStringPosAsArray(line, #line - 11, 11);
+        for i = #line - 12, 1, -1 do
+            local number = GetDigitAtStringPos(line, i);
+            PushJoltage(number, joltages);
+        end
+
+        local bank_output = 100000000000 * joltages[1] +
+                            10000000000 * joltages[2] +
+                            1000000000 * joltages[3] +
+                            100000000 * joltages[4] +
+                            10000000 * joltages[5] +
+                            1000000 * joltages[6] +
+                            100000 * joltages[7] +
+                            10000 * joltages[8] +
+                            1000 * joltages[9] +
+                            100 * joltages[10] +
+                            10 * joltages[11] +
+                            1 * joltages[12];
+
+        solution = solution + bank_output;
     end
     input_file:seek("set", 0);
 

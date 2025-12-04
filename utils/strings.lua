@@ -31,3 +31,27 @@ function GetDigitAtStringPos(input_string, pos)
     assert(type(as_number) == "number");
     return as_number;
 end
+
+function GetNumberAtStringPos(input_string, pos, len)
+    assert(type(input_string) == "string" and type(pos) == "number" and type(len) == "number");
+    assert(pos + len <= #input_string);
+
+    local num_as_string = string.sub(input_string, pos, pos + len);
+    local as_number = tonumber(num_as_string);
+    assert(type(as_number) == "number");
+    return as_number;
+end
+
+function GetNumberAtStringPosAsArray(input_string, pos, len)
+    assert(type(input_string) == "string" and type(pos) == "number" and type(len) == "number");
+    assert(pos + len <= #input_string);
+
+    local num_as_string = string.sub(input_string, pos, pos + len);
+    local res = {};
+    for i = 1, #num_as_string do
+        local num = GetDigitAtStringPos(num_as_string, i);
+        table.insert(res, num);
+    end
+
+    return res;
+end
