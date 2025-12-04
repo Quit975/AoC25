@@ -25,8 +25,9 @@ function SolveFirstPart()
             end
         end
 
-        if highest_single == 0 then
-            highest_single = GetDigitAtStringPos(line, #line);
+        local last_digit = GetDigitAtStringPos(line, #line);
+        if last_digit > highest_single then
+            highest_single = last_digit;
         end
 
         solution = solution + (highest_decimal * 10) + highest_single;
