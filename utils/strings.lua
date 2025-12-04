@@ -22,3 +22,12 @@ function SplitStringAsNumbers(input, splitting_character)
 
     return left_result, right_result
 end
+
+function GetDigitAtStringPos(input_string, pos)
+    assert(type(input_string) == "string" and type(pos) == "number");
+    assert(pos <= #input_string);
+    local char_at_pos = string.sub(input_string, pos, pos);
+    local as_number = tonumber(char_at_pos);
+    assert(type(as_number) == "number");
+    return as_number;
+end
