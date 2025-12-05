@@ -10,9 +10,11 @@ end
 function SolveFirstPart()
     local start_time = os.clock();
     local solution = 0;
+
+    local access_scores = {};
     
     for line in input_file:lines() do
-        
+        table.insert(access_scores, {});
     end
     input_file:seek("set", 0);
 
