@@ -90,10 +90,28 @@ function SolveSecondPart()
     local start_time = os.clock();
     local solution = 0;
 
+    local reached_ids = false;
+    local ranges = {};
+
     for line in input_file:lines() do
-        
+        if #line == 0 then
+            break;
+        end
+
+        local from, to = SplitStringAsNumbers(line, "-");
+        InsertNewRange(ranges, from, to);
     end
     input_file:seek("set", 0);
+
+    for i = #ranges, 1, -1 do
+        local range = table.remove(ranges, i);
+        InsertNewRange(ranges, range[1], range[2]);
+    end
+
+    for i = 1, #ranges do
+        local range_span = ranges[i][2] - ranges[i][1] + 1;
+        solution = solution + range_span;
+    end
 
     local end_time = os.clock();
     local final_time = end_time - start_time;
