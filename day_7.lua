@@ -244,14 +244,6 @@ function SolveSecondPart()
                 table.remove(in_beams, b);
             end
         end
-
-        local paths_possible = 0;
-        for b = 1, #in_beams do
-            local beam = in_beams[b];
-            paths_possible = paths_possible + in_board[beam[2]][beam[1]];
-        end
-
-        return paths_possible;
     end
 
     local DebugDrawBeams = function(in_board, in_beams)
@@ -301,8 +293,12 @@ function SolveSecondPart()
 
     for i = 1, board_h - 1 do
         --DebugDrawBeams(board, beams);
-        local paths = SimStep(board, beams);
-        solution = paths;
+        SimStep(board, beams);
+    end
+
+    for b = 1, #beams do
+        local beam = beams[b];
+        solution = solution + board[beam[2]][beam[1]];
     end
 
     local end_time = os.clock();
